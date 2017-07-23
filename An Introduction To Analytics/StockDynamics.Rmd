@@ -1,0 +1,117 @@
+## We'll look at the monthly stock prices of five of these companies: IBM, General Electric (GE), Procter and Gamble, Coca Cola, and Boeing.
+```{r}
+IBM=read.csv("~/Downloads/IBMStock.csv")
+GE=read.csv("~/Downloads/GEStock.csv")
+ProcterGamble=read.csv("~/Downloads/ProcterGambleStock.csv")
+CocaCola=read.csv("~/Downloads/CocaColaStock.csv")
+Boeing=read.csv("~/Downloads/BoeingStock.csv")
+```
+##Summary
+```{r}
+str(IBM)
+str(GE)
+str(ProcterGamble)
+str(CocaCola)
+str(Boeing)
+```
+## Each dataframe has 480 observations and two variables, Date and StockProce.
+
+## Summary Statistics
+
+## Converting dates to Date objects
+```{r}
+IBM$Date = as.Date(IBM$Date, "%m/%d/%y")
+
+GE$Date = as.Date(GE$Date, "%m/%d/%y")
+
+CocaCola$Date = as.Date(CocaCola$Date, "%m/%d/%y")
+
+ProcterGamble$Date = as.Date(ProcterGamble$Date, "%m/%d/%y")
+
+Boeing$Date = as.Date(Boeing$Date, "%m/%d/%y")
+```
+## Earliest year in dataset
+```{r}
+summary(IBM$Date)
+summary(GE$Date)
+summary(ProcterGamble$Date)
+summary(CocaCola$Date)
+summary(Boeing$Date)
+```
+## Earliest Year in Dataset=1970
+## Latest Year in Dataset=2009
+```{r}
+summary(IBM)
+```
+## Mean Stock Price of IBM = 144.38
+```{r}
+summary(GE)
+```
+## Mean Stock Price of GE = 59.303
+```{r}
+summary(CocaCola)
+```
+## Maximum Stock Price of CocaCola = 60.03
+```{r}
+summary(Boeing)
+```
+## Median Stock Price of Boeing = 46.59
+
+```{r}
+sd(ProcterGamble$StockPrice)
+```
+## Standard Deviation of Procter & Gamble = 18.19414
+
+## Visualizing Stock Dynamics
+```{r}
+plot(CocaCola$Date,CocaCola$StockPrice,type='l')
+
+```
+## Highest Stock Price = 1973
+## Lowest Stock Price = 1980
+```{r}
+plot(CocaCola$Date,CocaCola$StockPrice,type='l',col='red')
+lines(ProcterGamble$Date,ProcterGamble$StockPrice,col='blue',lty=2)
+abline(v=as.Date(c("2000-03-01")), lwd=2)
+
+```
+## As per the generated plot,Procter&Gamble dropped more than CocaCola
+## 1983 : CocaCola going up. CocaCola had lower values
+```{r}
+plot(CocaCola$Date[301:432], CocaCola$StockPrice[301:432], type="l", col="red", ylim=c(0,210))
+lines(IBM$Date[301:432],IBM$StockPrice[301:432],col='purple')
+lines(GE$Date[301:432],GE$StockPrice[301:432],col='blue')
+lines(ProcterGamble$Date[301:432],ProcterGamble$StockPrice[301:432],col='green')
+lines(Boeing$Date[301:432],Boeing$StockPrice[301:432],col='orange')
+abline(v=as.Date(c("2000-03-01")), lwd=2)
+abline(v=as.Date(c("1997-9-01")), lwd=1)
+abline(v=as.Date(c("1997-11-01")), lwd=1)
+
+```
+## after bubble burst in March 2000, GE dropped the most
+## IBM reached the highest value during this time period
+## Boeing and PG showed decreasing trend from Sept 1997 to Nov 1997 (Economic crisis in Asia)
+## Between 2004 and 2005,Boeing is performing best
+
+## Monthly Trends
+
+```{r}
+summary(IBM$StockPrice)
+```
+## IBM Mean Price = 144.40
+```{r}
+tapply(IBM$StockPrice,months(IBM$Date),mean)
+```
+## Jan,Feb,Mar,May,April months had higher monthly mean price than overall average IBM stock price
+```{r}
+tapply(GE$StockPrice,months(GE$Date),mean)
+tapply(ProcterGamble$StockPrice,months(ProcterGamble$Date),mean)
+```
+## For both GE and PG , April has the highest average stock price.
+
+```{r}
+tapply(CocaCola$StockPrice,months(CocaCola$Date),mean)
+tapply(Boeing$StockPrice,months(Boeing$Date),mean)
+```
+
+## For December ,stock prices are lower than January

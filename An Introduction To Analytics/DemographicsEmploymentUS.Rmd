@@ -1,0 +1,120 @@
+## Loading and Summarizing the CPS data
+```{r}
+CPS=read.csv("~/Downloads/CPSData.csv")
+summary(CPS)
+str(CPS)
+```
+## Number of Interviewees in Dataset =131302
+## The most common Industry of employment is Educational and health services
+
+```{r}
+sort(table(CPS$Region))
+sort(table(CPS$State))
+```
+## State with fewest interviewees = New Mexico
+## State with largest interviewees = California
+```{r}
+table(CPS$Race,CPS$Hispanic)
+```
+## Races for which there at least 250 Hispanic ethinicity = American Indian,Black,White and Multiracial
+
+## Evaluating Missing Values
+```{r}
+summary(CPS)
+```
+## Variables with at least One NA value = MetroAreaCode,Married,Education,EmploymentStatus and Industry
+
+```{r}
+table(CPS$Region,is.na(CPS$Married))
+table(CPS$Sex,is.na(CPS$Married))
+table(CPS$Citizenship,is.na(CPS$Married))
+table(CPS$Age,is.na(CPS$Married))
+
+```
+## CPS does not ask for marital status for ages 14 and younger. Missing values of Married is related to Age of the interviewee.
+## Other variables have missing values and non-missing values for all possible values
+```{r}
+table(CPS$State,is.na(CPS$MetroAreaCode))
+```
+## Number of states with people living in non-metropolitan area = 2
+## Number of states with people living in metropolitan area = 3
+```{r}
+tapply(is.na(CPS$MetroAreaCode),CPS$Region,mean)
+```
+## Midwest has largest population of interviews living in non-metropolitan area
+```{r}
+tapply(is.na(CPS$MetroAreaCode),CPS$State,mean)
+```
+## State closest to 30% non-metropolitan population = Wisconsin
+## State with largest population of non-metropolitan (ignoring states where all are non-metropolitan)= Montana
+
+##Integrating Metropolitan Area Data
+```{r}
+MetroAreaMap = read.csv("~/Downloads/MetroAreaCodes.csv")
+CountryMap=read.csv("~/Downloads/CountryCodes.csv")
+```
+```{r}
+str(MetroAreaMap)
+str(CountryMap)
+```
+## MetroAreaMap = 271 obs
+## CountryMap = 149 obs
+```{r}
+CPS=merge(CPS,MetroAreaMap,by.x='MetroAreaCode',by.y='Code',all.x=TRUE)
+str(CPS)
+```
+## MetroArea is the new variable that is added
+```{r}
+summary(CPS$MetroArea)
+```
+## Number of missing values in MetroArea = 34238
+## Boston-Cambridge-Quincy, MA-NH has the largest interviewee population than Atlanta-Sandy Springs-Marietta, GA,Baltimore-Towson, MD and San Francisco-Oakland-Fremont, CA
+```{r}
+sort(tapply(CPS$Hispanic,CPS$MetroArea,mean))
+```
+## Laredo,TX has most Hispanic ethnicity
+```{r}
+sort(tapply(CPS$Race=='Asian',CPS$MetroArea,mean))
+```
+## The number of metropolitan areas in the United States from which at least 20% of interviewees are Asian = 4
+
+```{r}
+sort(tapply(CPS$Education == "No high school diploma", CPS$MetroArea, mean,na.rm=TRUE))
+```
+## Iowa City, IA has the smallest proportion of interviewees who recevied no school diploma
+
+## Integrating Country of Birth Data
+```{r}
+CPS =merge(CPS,CountryMap,by.x='CountryOfBirthCode',by.y='Code',all.x=TRUE)
+```
+
+```{r}
+str(CPS)
+```
+## Country is added to CPS
+```{r}
+summary(CPS$Country)
+```
+## 176 values are missing in Country
+```{r}
+sort(table(CPS$Country))
+```
+## Outside North America , Phillipines is the country of birth for  most interviewees
+```{r}
+sort(tapply(CPS$Country!='United States',CPS$MetroArea=='New York-Northern New Jersey-Long Island, NY-NJ-PA',mean,na.rm=TRUE))
+```
+## Proportion of the interviewees from the "New York-Northern New Jersey-Long Island, NY-NJ-PA" metropolitan area have a country of birth that is not the United States = 0.3086603
+```{r}
+sort(tapply(CPS$Country=='India',CPS$MetroArea,mean,na.rm=TRUE))
+```
+##For India,New York-Northern New Jersey-Long Island, NY-NJ-PA among options
+
+
+```{r}
+sort(tapply(CPS$Country=='Brazil',CPS$MetroArea,mean,na.rm=TRUE))
+```
+##For Brazil,Boston-Cambridge-Quincy, MA-NH among options
+```{r}
+sort(tapply(CPS$Country=='Somalia',CPS$MetroArea,mean,na.rm=TRUE))
+```
+## For Somalia,Minneapolis-St Paul-Bloomington, MN-WI among options

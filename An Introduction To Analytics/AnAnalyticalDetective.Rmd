@@ -1,0 +1,137 @@
+## Loading the Data
+```{r}
+mvt= read.csv("~/Downloads/mvtWeek1.csv")
+```
+## Rows of observations in Data
+```{r}
+str(mvt)
+```
+## So there are 191641 observations
+## Also there are 11 variables
+
+##Maximum value of variable 'ID'
+```{r}
+max(mvt$ID)
+```
+## Max Value : 9181151
+
+## Minimum value of variable 'Beat'
+```{r}
+min(mvt$Beat)
+```
+## Min Value : 111
+
+## Count of Observations with 'TRUE' in Arrest
+```{r}
+summary(mvt$Arrest)
+
+```
+## TRUE values : 15536
+
+## Count of Observations with 'ALLEY' in LocationDescription
+```{r}
+summary(mvt$LocationDescription=='ALLEY')
+```
+## ALLEY count : 2308
+
+## Understanding dates in R
+```{r}
+mvt$Date[1]
+```
+## Date Format : Month/Day/Year Hour:Minute
+
+## Convert the Date characters into Date object
+```{r}
+DateConvert=as.Date(strptime(mvt$Date,"%m/%d/%y %H:%M"))
+summary(DateConvert)
+
+```
+
+## Median Value: May 2006
+
+## Extract Months and Weekdays and add to dataset
+```{r}
+mvt$Month=months(DateConvert)
+mvt$Weekday=weekdays(DateConvert)
+
+mvt$Date=DateConvert
+table(mvt$Month)
+```
+
+## Fewest motor vehicle thefts in : February
+```{r}
+table(mvt$Weekday)
+```
+## Most motor vehicle thefts on : Friday
+```{r}
+table(mvt$Arrest,mvt$Month)
+```
+## Month that has the largest motor vehicle thefts for which arrest was made:January
+
+## Visualizing Crime Trends
+
+## Histogram of Date
+```{r}
+hist(mvt$Date,breaks=100)
+```
+## In general , it looks like crime decreases from 2002 - 2012
+## Also ,it decreased from 2005-2008
+## And it increased from 2009-2011
+
+## There is a clear upward trend in crime
+
+## Boxplot of Date sorted by Arrest
+
+```{r}
+boxplot(mvt$Date ~ mvt$Arrest)
+```
+## Arrests are made in the first half of the period, since the boxplot for "Arrest = TRUE" is skewed towards the bottom of the plot
+
+
+```{r}
+table(mvt$Arrest,mvt$Year)
+```
+```{r}
+2152/(2152+18517)
+```
+## Proportion of motor vehicle thefts for which arrest were made in 2001 = 0.1041173
+```{r}
+1212/(13068+1212)
+```
+## Proportion of motor vehicle thefts for which arrest were made in 2007 = 0.08487395
+```{r}
+550/(550+13542)
+```
+## Proportion of motor vehicle thefts for which arrest were made in 2012 = 0.03902924
+
+
+## Popular Locations
+Analyzing this data could be useful to the Chicago Police Department when deciding where to allocate resources. If they want to increase the number of arrests that are made for motor vehicle thefts, where should they focus their efforts?
+```{r}
+sort(table(mvt$LocationDescription))
+```
+## Other than 'Others' Category , the top 5 locations are STREET, PARKING LOT/GARAGE(NON.RESID.) ,ALLEY ,GAS STATION and DRIVEWAY - RESIDENTIAL 
+
+## Subset of top5
+```{r}
+Top5 = subset(mvt, LocationDescription=="STREET" | LocationDescription=="PARKING LOT/GARAGE(NON.RESID.)" | LocationDescription=="ALLEY" | LocationDescription=="GAS STATION" | LocationDescription=="DRIVEWAY - RESIDENTIAL")
+
+str(Top5)
+
+```
+## Number of Observations: 177510
+```{r}
+Top5$LocationDescription = factor(Top5$LocationDescription)
+table(Top5$LocationDescription, Top5$Arrest)
+```
+## Higher Arrest Rate out of Top5 : GAS STATION
+
+```{r}
+table(Top5$LocationDescription,Top5$Weekday)
+```
+## Day of Week with most vehicle thefts at GAS STATION: Saturday(338)
+
+## DAy of week with fewest vehicle thefts at DRIVEWAY - RESIDENTIAL : Satuday
+```{r}
+
+```
